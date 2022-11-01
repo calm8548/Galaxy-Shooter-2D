@@ -14,18 +14,29 @@ public class Player : MonoBehaviour
     private float _canfire = -1f;
    [SerializeField]
     private int _lives = 3;
+    private SpawnManager _spawnManager;
  
 
     // Start is called before the first frame update
     void Start()
     {
        transform.position = new Vector3(0, 0, 0);
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();//find the object. Get the component
+   
+        if (_spawnManager == null)
+        {
+            Debug.LogError("The Spawn Manager is NULL");
+        }
+    
+    
     }
     // Update is called once per frame
     void Update()
     {
         CalculateMovement();
 
+        //if I hit spacekey
+        //spawn GameObject (laser)
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canfire)
         {
             firelaser();
@@ -56,7 +67,8 @@ public class Player : MonoBehaviour
     void firelaser()
     {              
             _canfire = Time.time + _firerate;
-            Instantiate(_laserPrefab, transform.position + new Vector3(0, 0.8f, 0), Quaternion.identity);      
+            Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
+        
     }
 
     public void Damage()
@@ -65,6 +77,9 @@ public class Player : MonoBehaviour
 
         if  (_lives < 1)
         {
+            //Communicate with Spawn manager
+            _spawnManager.OnPlayerDeath();
+            //Let them know to stop spawning            
             Destroy(this.gameObject);
         }
     }
