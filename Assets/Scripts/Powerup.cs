@@ -18,7 +18,7 @@ public class Powerup : MonoBehaviour
     {
         //move down at a speed of 3 (adjust in Inspector)
         transform.Translate(Vector3.down * _speed * Time.deltaTime);
-             
+
         //when leave screen, destroy this object
         if (transform.position.y <= -4.7f)
         {
