@@ -42,8 +42,6 @@ public class Powerup : MonoBehaviour
             Player player = other.transform.GetComponent<Player>();
             if (player != null)
             {
-
-
                 switch (powerupID) //switching through powerupID variable
                 {
                     case 0:
