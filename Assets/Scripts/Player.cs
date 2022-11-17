@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
     private UIManager _uiManager;
     [SerializeField]
     private GameObject _shieldVisual;
+    
 
     private bool _isTripleShotActive = false;    
     private bool _isSpeedBoostActive = false;
@@ -102,11 +103,13 @@ public class Player : MonoBehaviour
         }     
      
         _lives--;
+        //calls UpdateLives from UIManager
+        _uiManager.UpdateLives(_lives);
 
         if  (_lives < 1)
         {           
             _spawnManager.OnPlayerDeath();                       
-            Destroy(this.gameObject);
+            Destroy(this.gameObject);            
         }
     }
     
@@ -140,8 +143,7 @@ public class Player : MonoBehaviour
     {
         _isShieldActive = true;
         //enable Shield Visualizer
-        _shieldVisual.SetActive(true);
-       
+        _shieldVisual.SetActive(true);       
     }
 
     //add method to add 10 the score
