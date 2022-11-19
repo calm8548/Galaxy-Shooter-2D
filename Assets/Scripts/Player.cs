@@ -21,18 +21,19 @@ public class Player : MonoBehaviour
     private UIManager _uiManager;
     [SerializeField]
     private GameObject _shieldVisual;
-    
+    [SerializeField]
+    private GameObject _rightEngine, _leftEngine;
+   
+   
+    [SerializeField]
+    private int _score;
 
     private bool _isTripleShotActive = false;    
     private bool _isSpeedBoostActive = false;
-    private bool _isShieldActive = false;
-
-    [SerializeField]
-    private int _score;
-        
-    
+    private bool _isShieldActive = false;   
+       
    
- 
+   
     
     void Start()
     {
@@ -103,7 +104,17 @@ public class Player : MonoBehaviour
         }     
      
         _lives--;
-        //calls UpdateLives from UIManager
+        //if lives is 2, enable right engine
+        if (_lives == 2)
+        {          
+            _rightEngine.SetActive(true);
+        }             
+        //else if lives is 1, enable left engine
+        else if (_lives ==1)
+        {            
+            _leftEngine.SetActive(true);
+        }
+
         _uiManager.UpdateLives(_lives);
 
         if  (_lives < 1)
