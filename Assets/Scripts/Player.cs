@@ -15,7 +15,11 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _firerate = 0.15f;
     private float _canfire = -1f;
-   [SerializeField]
+    [SerializeField]
+    private float _tripleShotCooldown = 5.0f;
+    [SerializeField]
+    private float _speedBoostCooldown = 5.0f;    
+    [SerializeField]
     private int _lives = 3;
     private SpawnManager _spawnManager;
     private UIManager _uiManager;
@@ -23,7 +27,17 @@ public class Player : MonoBehaviour
     private GameObject _shieldVisual;
     [SerializeField]
     private GameObject _rightEngine, _leftEngine;
+
+    [SerializeField]
+    private AudioClip _laserSFX;
+    [SerializeField]
+    private AudioClip _explosionSFX;
+    private AudioSource _audioSource;
    
+
+
+
+    //variable to store audio clip
    
     [SerializeField]
     private int _score;
@@ -40,6 +54,7 @@ public class Player : MonoBehaviour
        transform.position = new Vector3(0, 0, 0);
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();//find the object. Get the component
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        _audioSource = GetComponent<AudioSource>();
         if (_spawnManager == null)
         {
             Debug.LogError("The Spawn Manager is NULL");
@@ -48,6 +63,19 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("The UI Manager is NULL");
         }
+        if (_audioSource == null)
+        {
+            Debug.LogError("AudioSource on the player is NULL.");
+        }
+        else if (_lives <1 )
+        {
+            _audioSource.clip = _explosionSFX;
+        }
+        else
+        {
+            _audioSource.clip = _laserSFX;
+        }
+
     }
     
     void Update()
@@ -91,7 +119,11 @@ public class Player : MonoBehaviour
         else
         {
             Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
-            }      
+        }
+
+        //play the laser audio clip
+        _audioSource.Play();    
+
     }
 
     public void Damage()
@@ -120,7 +152,8 @@ public class Player : MonoBehaviour
         if  (_lives < 1)
         {           
             _spawnManager.OnPlayerDeath();                       
-            Destroy(this.gameObject);            
+            Destroy(this.gameObject);
+            _audioSource.Play();
         }
     }
     
@@ -132,7 +165,7 @@ public class Player : MonoBehaviour
     
     IEnumerator TripleShotPowerDownRoutine()
         {         
-        yield return new WaitForSeconds(5.0f);         
+        yield return new WaitForSeconds(_tripleShotCooldown);         
         _isTripleShotActive = false;
         }
     
@@ -145,7 +178,7 @@ public class Player : MonoBehaviour
 
     IEnumerator SpeedBoostPowerDownRoutine()
     {
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(_speedBoostCooldown);
         _isSpeedBoostActive = false;
         _speed /= _speedMultiplier;
     }
